@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>灵魂回响</title>
+<link rel="stylesheet" href="css/common.css"/>
+<link rel="stylesheet" href="css/index.css"/>
+<script src="js/move.js"></script>
+<script>
+	//补零函数
+	function toDou(n){
+		return n<10?'0'+n:''+n;	
+	}
+	//getByClass
+	function getByClass(oParent,sClass){
+		if(oParent.getElementsByClassName){
+			return oParent.getElementsByClassName(sClass);
+		}
+		var aEle=oParent.getElementsByTagName('*');
+		var result=[];
+		var re=new RegExp('\\b'+sClass+'\\b');
+		for(var i=0;i<aEle.length;i++){
+			if(re.test(aEle[i].className)){
+				result.push(aEle[i]);
+			}
+		}
+		return result;
+	}
+
+	window.onload=function(){
+		//左侧显示时间
+		/*var oTime=document.getElementById('time');
+		var aTimeImg=oTime.getElementsByTagName('img');
+		function clock(){
+			var oDate=new Date();
+			var h=oDate.getHours();
+			var m=oDate.getMinutes();
+			var s=oDate.getSeconds();
+			
+			var str=toDou(h)+':'+toDou(m)+':'+toDou(s);
+			
+			for(var i=0;i<aTimeImg.length;i++){
+				if(str.charAt(i)==':')continue;
+				aTimeImg[i].src='img/'+str.charAt(i)+'.png';	
+			}	
+		};
+		clock();
+		setInterval(clock,1000);*/
+
+		//右侧返回顶部按钮
+		var oBtn=document.getElementById('btn');
+		var timer=null;
+		window.onscroll=function(){
+			var scrollT=document.documentElement.scrollTop||document.body.scrollTop;
+			if(scrollT>0){
+				oBtn.style.display='block';	
+			}else{
+				oBtn.style.display='none';	
+			}
+		};
+		oBtn.onclick=function(){
+			var count=Math.floor(300/30);
+			var start=document.documentElement.scrollTop||document.body.scrollTop;
+			var dis=0-start;
+			var n=0;
+			timer=setInterval(function(){
+				n++;
+				var a=1-n/count;
+				var cur=start+dis*(1-a*a*a);
+					document.documentElement.scrollTop=document.body.scrollTop=cur;
+					if(n==count){
+						clearInterval(timer);	
+					}
+			},30)
+		};
+
+		//主页面banner左右滚动
+		var oBanner=document.getElementById('banner');
+		var oBbg=document.getElementById('banner_bg');	
+		var aBimg=oBbg.getElementsByTagName('img');
+		var oBdoc=document.getElementById('banner_doc');
+		var oBol=oBdoc.getElementsByTagName('ol')[0];
+		var aBoli=oBdoc.getElementsByTagName('li');
+		var timer1=null;
+		var n=0;
+		oBbg.style.width=aBimg.length*aBimg[0].offsetWidth+'px';
+		function tab(index){
+			for(var i=0;i<aBoli.length;i++){
+					aBoli[i].className='';
+			}
+			aBoli[index].className='active';
+		};
+		function next(){
+			n++;
+			if(n>aBoli.length-1){
+				n=0;
+			}
+			tab(n);
+			move(oBbg,{left:-n*aBimg[0].offsetWidth},{duration:1000});
+		};
+		for(var i=0;i<aBoli.length;i++){
+			aBoli[i].index=i;
+			aBoli[i].onmouseover=function(){
+				tab(this.index);
+				move(oBbg,{left:-this.index*aBimg[0].offsetWidth});
+				n=this.index;
+			};	
+		}
+		clearInterval(timer1);
+		timer1=setInterval(next,2000);
+		oBanner.onmouseover=function(){
+			clearInterval(timer1);	
+		};
+		oBanner.onmouseout=function(){
+			timer1=setInterval(next,2000);
+		};
+
+		//滚动语言栏
+		var oTj=document.getElementById('tj');
+		var oTjbox=document.getElementById('tj_box');
+		var aTspan=oTjbox.getElementsByTagName('span');
+		var m=0;
+		var timer2=null;
+		for(var i=0;i<aTspan.length;i++){
+			aTspan[i].style.top=parseInt(i*22)+9+'px';
+		};
+		function Tnext(){
+			m++;
+			if(m>aTspan.length/2){
+				m=0;
+			}
+			move(oTjbox,{top:-m*22});	
+		}
+		clearInterval(timer2);
+		timer2=setInterval(Tnext,1000);
+		oTj.onmouseenter=function(){
+			clearInterval(timer2);
+		};
+		oTj.onmouseleave=function(){
+			timer2=setInterval(Tnext,1000);
+		};
+
+		//两个按钮切换
+		var oOf=document.getElementById('of');
+		var aOspan=oOf.getElementsByTagName('span');
+		aOspan[1].onmouseover=function(){
+			aOspan[0].className='s1';
+			aOspan[1].className='s2 active2';
+		};
+		aOspan[0].onmouseover=function(){
+			aOspan[0].className='s1 active1';
+			aOspan[1].className='s2';
+		};
+
+		//下方banner上下滚动
+		var oList=document.getElementById('list');
+		var aLa=oList.getElementsByTagName('a');
+		var oFimg=document.getElementById('of_img');
+		var aFimg=oFimg.getElementsByTagName('img');	
+		var timer3=null;
+		var p=0;
+		oFimg.style.height=aFimg.length*aFimg[0].offsetHeight+'px';
+		function tab1(index){
+			for(var i=0;i<aLa.length;i++){
+					aLa[i].className='';
+				}
+			aLa[index].className='active';
+		};
+		function next1(){
+			p++;
+			if(p>aFimg.length-1){
+				p=0;
+			}
+			tab1(p);
+			move(oFimg,{top:-p*aFimg[0].offsetHeight},{duration:1000});
+		}
+		for(var i=0;i<aLa.length;i++){
+			aLa[i].index=i;
+			aLa[i].onmouseover=function(){
+				tab1(this.index);
+				move(oFimg,{top:-this.index*aFimg[0].offsetHeight});
+				p=this.index;
+			};	
+		}
+		clearInterval(timer3);
+		timer3=setInterval(next1,2000);
+		oFimg.onmouseover=function(){
+			clearInterval(timer3);	
+		};
+		oFimg.onmouseout=function(){
+			timer3=setInterval(next1,2000);
+		};
+
+		//中间公告牌延迟加载
+		var oOrt=document.getElementById('ort');
+		var aOa=oOrt.getElementsByTagName('a');
+		var oOrd=document.getElementById('ord_box');
+		var aOdiv=oOrd.getElementsByTagName('div');
+		var timer4=null;
+		for(var i=0;i<aOa.length;i++){
+			aOa[i].index=i;
+			aOa[i].onmouseover=function(){
+				var _this=this;
+				timer4=setTimeout(function(){
+					for(var i=0;i<aOa.length;i++){
+						aOa[i].className='';
+						aOdiv[i].className='ord';	
+					}
+					_this.className='active';
+					aOdiv[_this.index].className='ord show';	
+				},300)	
+			};
+			
+			aOa[i].onmouseout=function(){
+				clearTimeout(timer4);	
+			};	
+		}
+
+
+		//中间四个图标移入淡入淡出
+		var oTwo=document.getElementById('two');
+		var aTa=oTwo.getElementsByTagName('a');
+		var aTi=oTwo.getElementsByTagName('i');
+		for(var i=0;i<aTa.length;i++){
+			aTa[i].index=i;
+			aTa[i].onmouseover=function(){
+				for(var i=0;i<aTa.length;i++){
+					aTi[i].style.display='block';
+					move(aTi[i],{opacity:0.5});
+				}
+				aTi[this.index].style.display='none';	
+				move(aTi[this.index],{opacity:0});
+			};
+			aTa[i].onmouseout=function(){
+				for(var i=0;i<aTa.length;i++){
+					move(aTi[this.index],{opacity:0});
+					aTi[i].style.display='none';
+				}
+			}
+		}
+
+		//中下方选项卡
+		var oTr=document.getElementById('tr');
+		var aTra=oTr.getElementsByTagName('a');
+		var oTd=document.getElementById('td');
+		var aTda=oTd.getElementsByTagName('a');	
+		for(var i=0;i<aTra.length;i++){
+			aTra[i].index=i;
+			aTra[i].onmouseover=function (){
+				for(var i=0;i<aTra.length;i++){
+					aTra[i].className='a'+parseInt(i+1);
+					move(aTda[i],{opacity:0})	
+				}
+				this.className='a'+parseInt(this.index+1)+' '+'active'+parseInt(this.index+1);
+				move(aTda[this.index],{opacity:1})
+			};	
+		}
+
+		//活动中心图片破碎效果
+		var oMdiv=document.getElementById('th_mdiv');
+		var aBox=oMdiv.children;
+		var now=0;
+		var ready=true;
+		var col=8;//列
+		var row=4;//行
+		//1.分块
+		for(var r=0;r<row;r++){//外面走行
+			for(var c=0;c<col;c++){//里面走列
+				var oBox=document.createElement('div');
+				oBox.className='th_mbox';
+				oBox.style.width=oMdiv.offsetWidth/col+'px';
+				oBox.style.height=oMdiv.offsetHeight/row+'px';
+				oMdiv.appendChild(oBox);//offset要去页面上取
+				oBox.style.backgroundPosition= -oBox.offsetWidth*c+'px '+ -oBox.offsetHeight*r +'px';
+				oBox.r=r;
+				oBox.c=c;
+			}
+		}
+		//2.分步
+		next3();
+		function next3(){
+			if(!ready) return;
+			ready=false;
+			
+			for(var i=0;i<aBox.length;i++){
+				(function(index){
+					setTimeout(function(){
+						move(aBox[index],{opacity:0},{duration:800});
+					},Math.random()*500);
+				})(i);	
+			}
+			//算最后一个什么时候动?+花的时间
+			setTimeout(function(){
+				//恢复默认
+				now++;
+				now%=6;
+					
+				for(var i=0;i<aBox.length;i++){
+					aBox[i].style.backgroundImage='url(img/'+now+'.jpg)';
+					aBox[i].style.opacity=1;	
+				}
+				oMdiv.style.backgroundImage='url(img/'+(now+1)%6+'.jpg)';
+				ready=true;
+				setTimeout(next3,2000);	
+			},500+800+100);
+		};
+
+		//下方选项卡
+		var oFmt=document.getElementById('f_mt');
+		var aFtlink=getByClass(oFmt,'link');
+		var oFmd=document.getElementById('f_md');
+		var aFdlink=getByClass(oFmd,'link');
+		var oFrd=document.getElementById('f_rd');
+		var aFrlink=getByClass(oFrd,'link');
+		//alert(aFlink.length);
+		var oFbtUl1=document.getElementById('f_btnul1');
+		var aFulLi1=oFbtUl1.getElementsByTagName('li');
+		var oFbtUl2=document.getElementById('f_btnul2');
+		var aFulLi2=oFbtUl2.getElementsByTagName('li');
+		var oFbtUl3=document.getElementById('f_btnul3');
+		var aFulLi3=oFbtUl3.getElementsByTagName('li');
+		//alert(aFulLi3.length-1);
+		down(aFulLi1,aFtlink);
+		down(aFulLi2,aFdlink);
+		down(aFulLi3,aFrlink);
+		//封装选项卡
+		function down(a1,a2){
+			for(var i=0;i<a1.length-1;i++){
+				a1[i].index=i;
+				a1[i].onmouseover=function (){
+					for(var i=0;i<a1.length-1;i++){
+						a1[i].className='';
+						a2[i].className='link';
+						move(a2[i],{opacity:0})
+					}
+					a1[this.index].className='active';
+					a2[this.index].className='link show';
+					move(a2[this.index],{opacity:1})
+				};
+			}
+		}
+
+		//右下方兔子滑入滑出
+		var oLd4=document.getElementById('l_d4');
+		var aLda=oLd4.getElementsByTagName('a')[0];
+		var aLimg=oLd4.getElementsByTagName('img');
+		aLda.onmouseenter=function(){
+			move(aLimg[0],{opacity:0});
+			move(aLimg[1],{opacity:0.8});
+		};
+		aLda.onmouseleave=function(){
+			move(aLimg[0],{opacity:0.8});
+			move(aLimg[1],{opacity:0});
+		};
+
+		//左下方根据左右按钮切换图片
+		var aLdPrev=document.getElementById('prev');
+		var aLdNext=document.getElementById('next');
+		var oLd2Ul=document.getElementById('l_d2ul');
+		var aLd2UlLi=oLd2Ul.children;
+		var LdNow=0;
+		aLdNext.onclick=function(){
+			move(aLd2UlLi[LdNow],{left:-215})
+			//后一张
+			LdNow++;
+			if(LdNow==aLd2UlLi.length){
+				LdNow=0;
+			}
+			aLd2UlLi[LdNow].style.left=215+'px';
+			move(aLd2UlLi[LdNow],{left:0})
+		};
+		aLdPrev.onclick=function(){
+			move(aLd2UlLi[LdNow],{left:215});
+			//后一张
+			LdNow--;
+			if(LdNow<0){
+				LdNow=aLd2UlLi.length-1;
+			}
+			aLd2UlLi[LdNow].style.left=-215+'px';
+			move(aLd2UlLi[LdNow],{left:0})
+		};
+
+		//上方公告栏
+		var oLoginbarR=document.getElementById('loginbar_r');
+		var aLrLi=oLoginbarR.getElementsByTagName('li');
+		var oRbOne=document.getElementById('b_one');
+		var aRbOneLi=oRbOne.getElementsByTagName('li');
+		var oRbTwo=document.getElementById('b_two');
+
+		aLrLi[0].onmouseover=oRbOne.onmouseover=function(){
+			oRbOne.style.display='block';
+			aRbOneLi[0].style.borderTop='none';
+
+		};
+		aLrLi[0].onmouseout=oRbOne.onmouseout=function(){
+			oRbOne.style.display='none';
+		}
+		aLrLi[1].onmouseover=oRbTwo.onmouseover=function(){
+			oRbTwo.style.display='block';
+		};
+		aLrLi[1].onmouseout=oRbTwo.onmouseout=function(){
+			oRbTwo.style.display='none';
+		}
+	};
+</script>
+</head>
+
+<body>
+<div class="body_bg">
+    <!--<img src="img/bj2.jpg" alt="背景" class="body_img"/>-->
+	<!--<div class="time" id="time">
+    	<img class="num" src="img/0.png" alt="0" />
+        <img class="num" src="img/0.png" alt="0" />
+        <img class="c_word" src="img/sign.png" alt="sign" />
+        <img class="num" src="img/0.png" alt="0" />
+        <img class="num" src="img/0.png" alt="0" />
+        <img class="c_word" src="img/sign.png" alt="sign" />
+        <img class="num" src="img/0.png" alt="0" />
+        <img class="num" src="img/0.png" alt="0" />
+    </div>-->
+    <input type="button" value="返回顶部" class="btn" id="btn"/>
+    <div class="wrap">
+<!--head-->
+		<div class="head">
+			<div class="loginbar clearfix">
+				<div class="loginbar_l fl">
+					<a href="javascript:void(0);"></a>
+				</div>
+				<div class="loginbar_r fr clearfix">
+					<div class="left fl clearfix">
+						<a href="other/index.html" target="_blank"><i class="i1"></i>注册/登录</a>
+						<a href="javascript:void(0);"><i class="i2"></i>充值</a>
+						<a href="javascript:void(0);"><i class="i3"></i>畅游+</a>
+					</div>
+					<ul class="right fl clearfix" id="loginbar_r">
+					   <li>
+						  <a href="javascript:void(0);"><i></i>客服</a>
+					   </li>
+					   <li>
+						  <a href="javascript:void(0);"><i></i>畅游全服务</a>
+					   </li>
+					   <li>
+						  <a href="javascript:void(0);"><i></i>畅游全游戏</a>
+					   </li>
+					</ul>
+					<ul class="b_one" id="b_one">
+						<li>
+							<a href="javascript:void(0);">
+								<img src="img/lr1.png">
+								<span>在线客服</span>
+							</a>
+						</li>
+						<li>
+							<a href="javascript:void(0);">
+								<img src="img/lr2.png">
+								<span>手机客服</span>
+							</a>
+						</li>
+						<li>
+							<a href="javascript:void(0);">
+								<img src="img/lr3.png">
+								<span>会员网站</span>
+							</a>
+						</li>
+					</ul>
+					<ol class="b_two" id="b_two">
+						<li>
+							<a href="javascript:void(0);">
+								<dl class="clearfix">
+									<dt>
+										<img src="img/lr4.png"/>
+										<span>我的通行证</span>
+									</dt>
+									<dd>
+										<span>修改密码</span>
+									</dd>
+									<dd>
+										<span>实名认证</span>
+									</dd>
+									<dd>
+										<span>认证手机</span>
+									</dd>
+								</dl>
+							</a>
+						</li>
+						<li>
+							<a href="javascript:void(0);">
+								<dl class="clearfix">
+									<dt>
+										<img src="img/lr5.png"/>
+										<span>安全中心</span>
+									</dt>
+									<dd>
+										<span>密保卡</span>
+									</dd>
+									<dd>
+										<span>贴身密保</span>
+									</dd>
+									<dd>
+										<span>安全学堂</span>
+									</dd>
+								</dl>
+							</a>
+						</li>
+						<li>
+							<a href="javascript:void(0);">
+								<dl class="clearfix">
+									<dt>
+										<img src="img/lr6.png"/>
+										<span>充值中心</span>
+									</dt>
+									<dd>
+										<span>充值中心</span>
+									</dd>
+									<dd>
+										<span>在线购卡</span>
+									</dd>
+									<dd>
+										<span>查询充值记录</span>
+									</dd>
+								</dl>
+							</a>
+						</li>
+						<li>
+							<a href="javascript:void(0);">
+								<dl class="clearfix">
+									<dt>
+										<img src="img/lr7.png"/>
+										<span>客服中心</span>
+									</dt>
+									<dd>
+										<span>客服中心</span>
+									</dd>
+									<dd>
+										<span>被盗找回</span>
+									</dd>
+									<dd>
+										<span>手机客服</span>
+									</dd>
+								</dl>
+							</a>
+						</li>
+					</ol>
+				</div>
+				<div class="xian"></div>
+			</div>
+			<div class="banner" id="banner">
+				<div class="banner_bg clearfix" id="banner_bg">
+					<a href="javascript:void(0);">
+						<img src="img/banner_bg2.jpg" alt="game"/>
+					</a>
+					<a href="javascript:void(0);">
+						<img src="img/banner_bg3.jpg" alt="game"/>
+					</a>
+					<a href="javascript:void(0);">
+						<img src="img/banner_bg4.jpg" alt="game"/>
+					</a>
+					<a href="javascript:void(0);">
+						<img src="img/banner_bg5.jpg" alt="game"/>
+					</a>
+					<a href="javascript:void(0);">
+						<img src="img/banner_bg6.jpg" alt="game"/>
+					</a>
+					<a href="javascript:void(0);">
+						<img src="img/banner_bg7.jpg" alt="game"/>
+					</a>
+				</div>
+				<div class="nav clearfix">
+					<h1 class="nav_h fl clearfix">
+					   <a href="javascript:void(0);"></a>
+					</h1>
+					<ul class="nav_btn fl">
+					   <li class="l1">
+						  <a href="#">
+							<span>首页</span>
+							<i>HOME</i>
+						  </a>
+					   </li>
+					   <li>
+						  <a href="#">
+							<span>新闻公告</span>
+							<i>NEWS</i>
+						  </a>
+					   </li>
+					   <li>
+						  <a href="#">
+							<span>游戏特色</span>
+							<i>FEATURES</i>
+						  </a>
+					   </li>
+					   <li>
+						  <a href="#">
+							<span>新手指南</span>
+							<i>NEWBIE</i>
+						  </a>
+					   </li>
+					   <li>
+						  <a href="#">
+							<span>游戏下载</span>
+							<i>DOWNLOAD</i>
+						  </a>
+					   </li>
+					   <li>
+						  <a href="#">
+							<span>活动专区</span>
+							<i>ACTIVTY</i>
+						  </a>
+					   </li>
+					   <li class="l2">
+						  <a href="#">
+							<span>视觉欣赏</span>
+							<i>VIDEO & PICTURE</i>
+						  </a>
+					   </li>
+					   <li>
+						  <a href="#">
+							<span>玩家互动</span>
+							<i>INTERACTION</i>
+						  </a>
+					   </li>
+					   <li>
+						  <a href="#">
+							<span>客户服务</span>
+							<i>SERVICE</i>
+						  </a>
+					   </li>
+					</ul>
+			   </div>
+				<div class="nav_bg"></div>
+				<div class="banner_hot">
+				   <a href="javascript:void(0);" class="hot"></a>
+				</div>
+				<div class="banner_doc" id="banner_doc">
+					<ol class="clearfix">
+						<li class="active"></li>
+						<li></li>
+						<li></li>
+						<li></li>
+						<li></li>
+						<li></li>
+					</ol>
+				</div>
+			</div>
+			<div class="hd clearfix" >
+				<div class="dl fl">
+					<a href="javascript:void(0);" class="load"></a>
+					<a href="javascript:void(0);" class="btn1"></a>
+					<a href="javascript:void(0);" class="btn2"></a>
+					<a href="javascript:void(0);" class="btn3"></a>
+					<a href="javascript:void(0);" class="btn4"></a>
+				</div>
+				<div class="tj fl" id="tj">
+					<b>
+						<div class="tj_box" id="tj_box">
+							<span class="s1">电信一区<a href="javascript:void(0);">【艾欧尼亚】</a>欢迎进驻！</span>
+							<span class="s2">电信三区<a href="javascript:void(0);">【诺克萨斯】</a>欢迎进驻！</span>
+							<span>电信四区<a href="javascript:void(0);">【班德尔城】</a>欢迎进驻！</span>
+							<span>电信六区<a href="javascript:void(0);">【战争学院】</a>欢迎进驻！</span>
+							<span>电信八区<a href="javascript:void(0);">【雷瑟守备】</a>欢迎进驻！</span>
+							<span>网通二区<a href="javascript:void(0);">【德玛西亚】</a>欢迎进驻！</span>
+							<span>网通四区<a href="javascript:void(0);">【无畏先锋】</a>欢迎进驻！</span>
+							<span>电信十区<a href="javascript:void(0);">【黑色玫瑰】</a>欢迎进驻！</span>
+						</div>
+					</b>
+				</div>
+				<div class="gz fl clearfix">
+					<span class="fl">距您上次访问有<a href="javascript:void(0);">200</a>条更新<b></b></span>
+					<dl class="fr">
+					   <dt>关注：</dt>
+					   <dd class="d1"></dd>
+					   <dd class="d2"></dd>
+					   <dd class="d3"></dd>
+					</dl>
+				</div>
+			</div>
+		</div>
+	<!--end head-->
+	<!--content-->
+		<div class="content">
+			<div class="one clearfix">
+			   <div class="of fl" id="of">
+				   <div class="of_img clearfix" id="of_img">
+						<a href="javascript:void(0);">
+							<img src="img/of_img1.jpg" alt="LOL"/>
+						</a>
+						<a href="javascript:void(0);">
+							<img src="img/of_img2.jpg" alt="LOL"/>
+						</a>
+						<a href="javascript:void(0);">
+							<img src="img/of_img3.jpg" alt="LOL"/>
+						</a>
+						<a href="javascript:void(0);">
+							<img src="img/of_img4.jpg" alt="LOL"/>
+						</a>
+						<a href="javascript:void(0);">
+							<img src="img/of_img5.jpg" alt="LOL"/>
+						</a>
+						<a href="javascript:void(0);">
+							<img src="img/of_img6.jpg" alt="LOL"/>
+						</a>
+				   </div>
+				   <span class="s1 active1"></span>
+				   <span class="s2"></span>
+				   <ul class="list clearfix" id="list">
+					  <li>
+						 <a href="javascript:void(0);" class="active"></a>
+					  </li>
+					  <li>
+						 <a href="javascript:void(0);"></a>
+					  </li>
+					  <li>
+						 <a href="javascript:void(0);"></a>
+					  </li>
+					  <li>
+						 <a href="javascript:void(0);"></a>
+					  </li>
+					  <li>
+						 <a href="javascript:void(0);"></a>
+					  </li>
+					  <li>
+						 <a href="javascript:void(0);"></a>
+					  </li>
+				   </ul>
+			   </div>
+			   <div class="or fr">
+				   <div class="ort" id="ort">
+					   <ul class="clearfix">
+						  <li>
+							 <a href="javascript:void(0);" class="active">综合</a>
+						  </li>
+						  <li>
+							 <a href="javascript:void(0);">新闻</a>
+						  </li>
+						  <li>
+							 <a href="javascript:void(0);">公告</a>
+						  </li>
+						  <li>
+							 <a href="javascript:void(0);">媒体</a>
+						  </li>
+					   </ul>
+				   </div>
+				   <div class="ord_box" id="ord_box">
+					   <div class="ord show">
+						   <dl>
+							  <dt>4月8日大阪开启 新职业术士魔神天降</dt>
+							  <dd class="clearfix">
+								 <span class="fl">【综合】决战开启！6月4日全新Raid本“暗黑城</span>
+								 <span class="fr">02/24</span>
+							  </dd>
+							  <dd class="clearfix">
+								 <span class="fl">【综合】决战开启！6月4日全新Raid本“暗黑城</span>
+								 <span class="fr">02/24</span>
+							  </dd>
+							  <dd class="clearfix">
+								 <span class="fl">【综合】决战开启！6月4日全新Raid本“暗黑城</span>
+								 <span class="fr">02/24</span>
+							  </dd>
+							  <dd class="clearfix">
+								 <span class="fl">【综合】决战开启！6月4日全新Raid本“暗黑城</span>
+								 <span class="fr">02/24</span>
+							  </dd>
+							  <dd class="clearfix">
+								 <span class="fl">【综合】决战开启！6月4日全新Raid本“暗黑城</span>
+								 <span class="fr">02/24</span>
+							  </dd>
+							  <dd class="clearfix">
+								 <span class="fl">【综合】决战开启！6月4日全新Raid本“暗黑城</span>
+								 <span class="fr">02/24</span>
+							  </dd>
+							  <dd class="clearfix d1">
+								 <a href="javascript:void(0);" class="fr"><i></i>更多信息</a>
+							  </dd>
+						   </dl>
+					   </div>
+					   <div class="ord">
+						   <dl>
+							  <dt>6月9日东京开启 新职业术士邪神天降</dt>
+							  <dd class="clearfix">
+								 <span class="fl">【新闻】解密术士进化史，多张设计稿曝光</span>
+								 <span class="fr">04/23</span>
+							  </dd>
+							  <dd class="clearfix">
+								 <span class="fl">【新闻】解密术士进化史，多张设计稿曝光</span>
+								 <span class="fr">04/23</span>
+							  </dd>
+							  <dd class="clearfix">
+								 <span class="fl">【新闻】解密术士进化史，多张设计稿曝光</span>
+								 <span class="fr">04/23</span>
+							  </dd>
+							  <dd class="clearfix">
+								<span class="fl">【新闻】解密术士进化史，多张设计稿曝光</span>
+								 <span class="fr">04/23</span>
+							  </dd>
+							  <dd class="clearfix">
+								 <span class="fl">【新闻】解密术士进化史，多张设计稿曝光</span>
+								 <span class="fr">04/23</span>
+							  </dd>
+							  <dd class="clearfix">
+								 <span class="fl">【新闻】解密术士进化史，多张设计稿曝光</span>
+								 <span class="fr">04/23</span>
+							  </dd>
+							  <dd class="clearfix d1">
+								 <a href="javascript:void(0);" class="fr"><i></i>更多信息</a>
+							  </dd>
+						   </dl>
+					   </div>
+					   <div class="ord">
+						   <dl>
+							  <dt>8月10日名古屋开启 新职业术士巫神天降</dt>
+							  <dd class="clearfix">
+								 <span class="fl">【公告】天降魔神！进入PVP激斗时代！</span>
+								 <span class="fr">06/22</span>
+							  </dd>
+							  <dd class="clearfix">
+								 <span class="fl">【公告】天降魔神！进入PVP激斗时代！</span>
+								 <span class="fr">06/22</span>
+							  </dd>
+							  <dd class="clearfix">
+								 <span class="fl">【公告】天降魔神！进入PVP激斗时代！</span>
+								 <span class="fr">06/22</span>
+							  </dd>
+							  <dd class="clearfix">
+								 <span class="fl">【公告】天降魔神！进入PVP激斗时代！</span>
+								 <span class="fr">06/22</span>
+							  </dd>
+							  <dd class="clearfix">
+								 <span class="fl">【公告】天降魔神！进入PVP激斗时代！</span>
+								 <span class="fr">06/22</span>
+							  </dd>
+							  <dd class="clearfix">
+								 <span class="fl">【公告】天降魔神！进入PVP激斗时代！</span>
+								 <span class="fr">06/22</span>
+							  </dd>
+							  <dd class="clearfix d1">
+								 <a href="javascript:void(0);" class="fr"><i></i>更多信息</a>
+							  </dd>
+						   </dl>
+					   </div>
+					   <div class="ord">
+						   <dl>
+							  <dt>10月11日神奈川开启 新职业术士樱木天降</dt>
+							  <dd class="clearfix">
+								 <span class="fl">【媒体】萌属性爆表！大神手绘同人图大放送</span>
+								 <span class="fr">08/21</span>
+							  </dd>
+							  <dd class="clearfix">
+								 <span class="fl">【媒体】萌属性爆表！大神手绘同人图大放送</span>
+								 <span class="fr">08/21</span>
+							  </dd>
+							  <dd class="clearfix">
+								 <span class="fl">【媒体】萌属性爆表！大神手绘同人图大放送</span>
+								 <span class="fr">08/21</span>
+							  </dd>
+							  <dd class="clearfix">
+								 <span class="fl">【媒体】萌属性爆表！大神手绘同人图大放送</span>
+								 <span class="fr">08/21</span>
+							  </dd>
+							  <dd class="clearfix">
+								 <span class="fl">【媒体】萌属性爆表！大神手绘同人图大放送</span>
+								 <span class="fr">08/21</span>
+							  </dd>
+							  <dd class="clearfix">
+								 <span class="fl">【媒体】萌属性爆表！大神手绘同人图大放送</span>
+								 <span class="fr">08/21</span>
+							  </dd>
+							  <dd class="clearfix d1">
+								 <a href="javascript:void(0);" class="fr"><i></i>更多信息</a>
+							  </dd>
+						   </dl>
+					   </div>
+				  </div>
+			   </div>
+			</div>
+			<div class="two" id="two">
+			   <ul class="clearfix">
+				  <li>
+					 <a href="javascript:void(0);" class="a1"></a>
+					 <i></i>
+				  </li>
+				  <li>
+					 <a href="javascript:void(0);" class="a2"></a>
+					 <i></i>
+				  </li>
+				  <li>
+					 <a href="javascript:void(0);" class="a3"></a>
+					 <i></i>
+				  </li>
+				  <li class="l1">
+					 <a href="javascript:void(0);" class="a4"></a>
+					 <i></i>
+				  </li>
+			   </ul>
+			</div>
+			<div class="three clearfix">
+				 <div class="th_l fl">
+					 <div class="tr" id="tr">
+						 <a href="javascript:void(0);" class="a1 active1"></a>
+						 <a href="javascript:void(0);" class="a2"></a>
+						 <a href="javascript:void(0);" class="a3"></a>
+						 <a href="javascript:void(0);" class="a4"></a>
+						 <a href="javascript:void(0);" class="a5"></a>
+					 </div>
+					 <div class="td" id="td">
+						 <a href="javascript:void(0);" class="show">
+							<img src="img/th4.jpg" alt="LOL"/>
+						 </a>
+						 <a href="javascript:void(0);">
+							<img src="img/th5.jpg" alt="LOL"/>
+						 </a>
+						 <a href="javascript:void(0);">
+							<img src="img/th6.jpg" alt="LOL"/>
+						 </a>
+						 <a href="javascript:void(0);">
+							<img src="img/th7.jpg" alt="LOL"/>
+						 </a>
+						 <a href="javascript:void(0);">
+							<img src="img/th8.jpg" alt="LOL"/>
+						 </a>
+					 </div>
+				 </div>
+				 <div class="th_r fr">
+					 <h3>活动中心</h3>
+					 <i></i>
+					 <div class="th_m" id="th_m">
+						 <a href="javascript:void(0);">
+							<div class="th_mdiv" id="th_mdiv"></div>
+						 </a>
+					 </div>
+					 <ul>
+						<li class="clearfix">
+						   <span class="fl s1">神谕者的成长礼</span>
+						   <span class="fr s2">进行中</span>
+						</li>
+						<li class="clearfix">
+						   <span class="fl s1">神谕者的成长礼</span>
+						   <span class="fr s2">进行中</span>
+						</li>
+						<li class="clearfix">
+						   <span class="fl s1">神谕者的成长礼</span>
+						   <span class="fr s2">进行中</span>
+						</li>
+						<li class="clearfix">
+						   <span class="fl s1">神谕者的成长礼</span>
+						   <span class="fr s2">进行中</span>
+						</li>
+						<li class="clearfix">
+						   <span class="fl s1">神谕者的成长礼</span>
+						   <span class="fr s2">进行中</span>
+						</li>
+					 </ul>
+				 </div>
+			</div>
+			<div class="four clearfix">
+				<div class="f_l fl">
+					<div class="l_d1">
+						<dl class="clearfix">
+						   <dt>·快捷入口</dt>
+						   <dd>
+							   <a href="javascript:void(0);">·账号管理</a>
+						   </dd>
+						   <dd>
+							   <a href="javascript:void(0);">·兑换中心</a>
+						   </dd>
+						   <dd>
+							   <a href="javascript:void(0);">·账号安全</a>
+						   </dd>
+						   <dd>
+							   <a href="javascript:void(0);">·畅游知道</a>
+						   </dd>
+						   <dd>
+							   <a href="javascript:void(0);">·BUG提交</a>
+						   </dd>
+						   <dd>
+							   <a href="javascript:void(0);">·客户端FAQ</a>
+						   </dd>
+						   <dd>
+							   <a href="javascript:void(0);">·玩家社区</a>
+						   </dd>
+						   <dd>
+							   <a href="javascript:void(0);">·加速器下载</a>
+						   </dd>
+						</dl>
+					</div>
+					<div class="l_d2" id="l_d2">
+						<a href="javascript:void(0);" class="prev" id="prev">←</a>
+						<a href="javascript:void(0);" class="next" id="next">→</a>
+						<ul class="l_d2ul" id="l_d2ul">
+							<li class="l1">
+								<img src="img/game5.jpg" alt="game"/>
+							</li>
+							<li>
+								<img src="img/game2.jpg" alt="game"/>
+							</li>
+							<li>
+								<img src="img/game3.jpg" alt="game"/>
+							</li>
+							<li>
+								<img src="img/game4.jpg" alt="game"/>
+							</li>
+							<li>
+								<img src="img/game1.jpg" alt="game"/>
+							</li>
+							<li>
+								<img src="img/game6.jpg" alt="game"/>
+							</li>
+						</ul>
+					</div>
+					<div class="l_d3">
+						<a href="javascript:void(0);">媒体合作专区</a>
+					</div>
+					<div class="l_d4" id="l_d4">
+					   <a href="javascript:void(0);">
+						   <img src="img/r1.png" class="show" alt="rubbit"/>
+						   <img src="img/r2.png" alt="rubbit"/>
+					   </a>
+					</div>
+				</div>
+				<div class="f_m fl">
+					<div class="f_mt clearfix" id="f_mt">
+						<h3>玩家交流</h3>
+						<span></span>
+						<div class="f_btn">
+							<ul class="clearfix" id="f_btnul1">
+							   <li class="active">
+								  <a href="javascript:void(0);">玩家攻略</a>
+							   </li>
+							   <li>
+								  <a href="javascript:void(0);">论坛热帖</a>
+							   </li>
+							   <li>
+								  <a href="javascript:void(0);">社区精华</a>
+							   </li>
+							   <li class="l2">
+								  <i></i>
+								  <a href="javascript:void(0);">更多信息</a>
+							   </li>
+							</ul>
+						</div>
+						<div class="link show">
+							<div class="f_t fl">
+								<img src="img/f18.jpg" alt="game"/>
+							</div>
+							<ol class="fl clearfix">
+							   <li>
+								  <a href="javascript:void(0);">·阻止科萨特复活【英雄】成就攻略</a>
+							   </li>
+							   <li>
+								  <a href="javascript:void(0);">·阻止科萨特复活【英雄】成就攻略</a>
+							   </li>
+							   <li>
+								  <a href="javascript:void(0);">·阻止科萨特复活【英雄】成就攻略</a>
+							   </li>
+							   <li>
+								  <a href="javascript:void(0);">·阻止科萨特复活【英雄】成就攻略</a>
+							   </li>
+							   <li>
+								  <a href="javascript:void(0);">·阻止科萨特复活【英雄】成就攻略</a>
+							   </li>
+							   <li>
+								  <a href="javascript:void(0);">·阻止科萨特复活【英雄】成就攻略</a>
+							   </li>
+							   <li>
+								  <a href="javascript:void(0);">·阻止科萨特复活【英雄】成就攻略</a>
+							   </li>
+							   <li>
+								  <a href="javascript:void(0);">·阻止科萨特复活【英雄】成就攻略</a>
+							   </li>
+							</ol>
+						</div>
+						<div class="link">
+							<div class="f_t fl">
+								<img src="img/f12.jpg" alt="game"/>
+							</div>
+							<ol class="fl clearfix">
+								<li>
+									<a href="javascript:void(0);">·屌丝逆袭 大神成长计划开发</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·屌丝逆袭 大神成长计划开发</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·屌丝逆袭 大神成长计划开发</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·屌丝逆袭 大神成长计划开发</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·屌丝逆袭 大神成长计划开发</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·屌丝逆袭 大神成长计划开发</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·屌丝逆袭 大神成长计划开发</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·屌丝逆袭 大神成长计划开发</a>
+								</li>
+							</ol>
+						</div>
+						<div class="link">
+							<div class="f_t fl">
+								<img src="img/f13.jpg" alt="game"/>
+							</div>
+							<ol class="fl clearfix">
+								<li>
+									<a href="javascript:void(0);">·独家攻略！灵魂回响效率冲级攻略！</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·独家攻略！灵魂回响效率冲级攻略！</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·独家攻略！灵魂回响效率冲级攻略！</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·独家攻略！灵魂回响效率冲级攻略！</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·独家攻略！灵魂回响效率冲级攻略！</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·独家攻略！灵魂回响效率冲级攻略！</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·独家攻略！灵魂回响效率冲级攻略！</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·独家攻略！灵魂回响效率冲级攻略！</a>
+								</li>
+							</ol>
+						</div>
+					 </div>
+					<div class="f_md clearfix" id="f_md">
+						<h3>媒体专区</h3>
+						<span></span>
+						<div class="f_btn">
+							<ul class="clearfix" id="f_btnul2">
+							   <li class="active">
+								  <a href="javascript:void(0);">17173</a>
+							   </li>
+							   <li>
+								  <a href="javascript:void(0);">新浪爱问</a>
+							   </li>
+							   <li>
+								  <a href="javascript:void(0);">太平洋游戏</a>
+							   </li>
+							   <li class="l2">
+								  <i></i>
+								  <a href="javascript:void(0);">更多信息</a>
+							   </li>
+							</ul>
+						</div>
+						<div class="link show">
+							<div class="f_t fl">
+								<img src="img/f14.jpg" alt="game"/>
+							</div>
+							<ol class="fl clearfix">
+							   <li>
+								  <a href="javascript:void(0);">·生活技能之烹饪技能详细解读</a>
+							   </li>
+							   <li>
+								  <a href="javascript:void(0);">·生活技能之烹饪技能详细解读</a>
+							   </li>
+							   <li>
+								  <a href="javascript:void(0);">·生活技能之烹饪技能详细解读</a>
+							   </li>
+							   <li>
+								  <a href="javascript:void(0);">·生活技能之烹饪技能详细解读</a>
+							   </li>
+							   <li>
+								  <a href="javascript:void(0);">·生活技能之烹饪技能详细解读</a>
+							   </li>
+							   <li>
+								  <a href="javascript:void(0);">·生活技能之烹饪技能详细解读</a>
+							   </li>
+							   <li>
+								  <a href="javascript:void(0);">·生活技能之烹饪技能详细解读</a>
+							   </li>
+							   <li>
+								  <a href="javascript:void(0);">·生活技能之烹饪技能详细解读</a>
+							   </li>
+							</ol>
+						</div>
+						<div class="link">
+							<div class="f_t fl">
+								<img src="img/f15.jpg" alt="game"/>
+							</div>
+							<ol class="fl clearfix">
+								<li>
+									<a href="javascript:void(0);">·关于游戏里的一些问题【扫盲向】</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·关于游戏里的一些问题【扫盲向】</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·关于游戏里的一些问题【扫盲向】</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·关于游戏里的一些问题【扫盲向】</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·关于游戏里的一些问题【扫盲向】</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·关于游戏里的一些问题【扫盲向】</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·关于游戏里的一些问题【扫盲向】</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·关于游戏里的一些问题【扫盲向】</a>
+								</li>
+							</ol>
+						</div>
+						<div class="link">
+							<div class="f_t fl">
+								<img src="img/f17.jpg" alt="game"/>
+							</div>
+							<ol class="fl clearfix">
+								<li>
+									<a href="javascript:void(0);">·竞技场上线！进入PVP激斗时代！</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·竞技场上线！进入PVP激斗时代！</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·竞技场上线！进入PVP激斗时代！</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·竞技场上线！进入PVP激斗时代！</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·竞技场上线！进入PVP激斗时代！</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·竞技场上线！进入PVP激斗时代！</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·竞技场上线！进入PVP激斗时代！</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);">·竞技场上线！进入PVP激斗时代！</a>
+								</li>
+							</ol>
+						</div>
+					 </div>
+				</div>
+				<div class="f_r fr">
+					<div class="f_rt">
+						<h3>游戏资料</h3>
+						<span></span>
+						<div class="link clearfix">
+							<dl class="clearfix">
+								<dt class="fl">
+								  <a href="javascript:void(0);">新手入门</a>
+								</dt>
+								<dd class="fl">
+								  <a href="javascript:void(0);">注册账号</a>
+								</dd>
+								<dd class="fl">
+								  <a href="javascript:void(0);">下载游戏</a>
+								</dd>
+								<dd class="fl d1">
+								  <a href="javascript:void(0);">登录游戏</a>
+								</dd>
+							</dl>
+							<dl class="clearfix">
+								<dt class="fl">
+								  <a href="javascript:void(0);">职业介绍</a>
+								</dt>
+								<dd class="fl">
+								  <a href="javascript:void(0);">注册账号</a>
+								</dd>
+								<dd class="fl">
+								  <a href="javascript:void(0);">下载游戏</a>
+								</dd>
+								<dd class="fl d1">
+								  <a href="javascript:void(0);">登录游戏</a>
+								</dd>
+							</dl>
+							<dl class="clearfix">
+								<dt class="fl d2">
+								  <a href="javascript:void(0);">旅行者日记</a>
+								</dt>
+								<dd class="fl">
+								  <a href="javascript:void(0);">注册账号</a>
+								</dd>
+								<dd class="fl">
+								  <a href="javascript:void(0);">下载游戏</a>
+								</dd>
+								<dd class="fl d1">
+								  <a href="javascript:void(0);">登录游戏</a>
+								</dd>
+							</dl>
+							<dl class="clearfix d3">
+								<dt class="fl d2">
+								<a href="javascript:void(0);">神谕者指引</a>
+								</dt>
+								<dd class="fl">
+								<a href="javascript:void(0);">注册账号</a>
+								</dd>
+								<dd class="fl">
+								<a href="javascript:void(0);">下载游戏</a>
+								</dd>
+								<dd class="fl d1">
+								<a href="javascript:void(0);">登录游戏</a>
+								</dd>
+							</dl>
+							<a href="javascript:void(0);" class="a1">进入资料站</a>
+						</div>
+					 </div>
+					<div class="f_rd clearfix" id="f_rd">
+						<h3>视觉欣赏</h3>
+						<span></span>
+						<div class="f_btn">
+							<ul class="clearfix" id="f_btnul3">
+							   <li class="active">
+								  <a href="javascript:void(0);">游戏视频</a>
+							   </li>
+							   <li>
+								  <a href="javascript:void(0);">游戏截图</a>
+							   </li>
+							   <li class="l2">
+								  <i></i>
+								  <a href="javascript:void(0);">更多信息</a>
+							   </li>
+							</ul>
+						</div>
+						<div class="link show">
+							<a href="javascript:void(0);" class="fl">
+								<img src="img/f8.png" alt="video"/>
+							</a>
+							<a href="javascript:void(0);" class="fl">
+								<img src="img/f9.png" alt="video"/>
+							</a>
+							<a href="javascript:void(0);" class="fl">
+								<img src="img/f10.png" alt="video"/>
+							</a>
+							<a href="javascript:void(0);" class="fl">
+								<img src="img/f11.png" alt="video"/>
+							</a>
+						</div>
+						<div class="link">
+							<a href="javascript:void(0);" class="fl">
+								<img src="img/f19.jpg" alt="video"/>
+							</a>
+							<a href="javascript:void(0);" class="fl">
+								<img src="img/f20.jpg" alt="video"/>
+							</a>
+							<a href="javascript:void(0);" class="fl">
+								<img src="img/f21.jpg" alt="video"/>
+							</a>
+							<a href="javascript:void(0);" class="fl">
+								<img src="img/f22.jpg" alt="video"/>
+							</a>
+						</div>
+					 </div>
+				</div>
+			</div>
+			<div class="five" id="five">
+				<span class="s1">健康游戏公告</span>
+				<span class="s2">抵制不良游戏，拒绝盗版游戏。注意自我保护，谨防受骗上当。适度游戏益脑，沉迷游戏伤身。合理安排时间，享受健康生活<br />本游戏适合18周岁以上的成年人用户，未满十八岁的未成年用户请在家长的监督下进行游戏。</span>
+			</div>
+			<div class="six"></div>
+		</div>
+	<!--end content-->
+	<!--foot-->
+		<div class="foot clearfix">
+			<div class="f_content">
+				<div class="fl f_one">
+					<a href="javascript:void(0);">
+						<img src="img/cy.png" alt="畅游"/>
+					</a>
+				</div>
+				<div class="fl f_two">
+					<a href="javascript:void(0);">
+						<img src="img/cc.png" alt="畅游"/>
+					</a>
+				</div>
+				<div class="fl f_three">
+					<p>北京畅游时代数码技术有限公司版权所有 COPYRIGHT © 2011 CHANGYOU.COM LIMITED. ALL RIGHTS RESERVED.<a href="#">法律声明</a>|<a href="#">联系我们</a></p>
+					<p><a href="javascript:void(0);"><span>京网文[2014]0949-249号</span></a>|京ICP证：<span>070525</span>号|ISBN号：<span>978-7-89989-476-7</span></p>
+					<p class="p1"><a href="#" class="a1"></a><a href="javascript:void(0);">京公网安备 <span>11010702000007</span>号</a></p>
+				</div>
+			</div>
+		</div>
+
+	<!--end foot-->
+	</div>
+</div>
+</body>
+</html>
